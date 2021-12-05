@@ -17,28 +17,33 @@ fn part_one() {
                 },
             )
             .collect();
+        let overlaps = points
+            .iter()
+            .fold(
+                HashMap::<Vector2<i64>, i64>::new(),
+                |mut acc, (start, end)| {
+                    let d = end - start;
+                    let dir = if d.y == 0 {
+                        Vector2::new(d.x.signum(), 0)
+                    } else if d.x == 0 {
+                        Vector2::new(0, d.y.signum())
+                    } else {
+                        return acc;
+                    };
 
-        let mut overlaps: HashMap<Vector2<i64>, i64> = HashMap::new();
+                    let mut s = *start;
+                    while s != *end + dir {
+                        acc.entry(s).and_modify(|v| *v += 1).or_insert(1);
+                        s += dir;
+                    }
+                    acc
+                },
+            )
+            .iter()
+            .filter(|(_, v)| **v > 1)
+            .count();
 
-        for (start, end) in points.iter() {
-            let d = end - start;
-            let dir = if d.y == 0 {
-                Vector2::new(d.x.signum(), 0)
-            } else if d.x == 0 {
-                Vector2::new(0, d.y.signum())
-            } else {
-                continue;
-            };
-
-            let mut s = *start;
-            while s != *end + dir {
-                overlaps.entry(s).and_modify(|v| *v += 1).or_insert(1);
-                s += dir;
-            }
-        }
-
-        let overlap_count = overlaps.iter().filter(|(_, v)| **v > 1).count();
-        println!("Overlaps {}", overlap_count);
+        println!("Overlaps {}", overlaps);
     }
 }
 
@@ -54,27 +59,33 @@ fn part_two() {
             )
             .collect();
 
-        let mut overlaps: HashMap<Vector2<i64>, i64> = HashMap::new();
+        let overlaps = points
+            .iter()
+            .fold(
+                HashMap::<Vector2<i64>, i64>::new(),
+                |mut acc, (start, end)| {
+                    let d = end - start;
+                    let dir = if d.y == 0 {
+                        Vector2::new(d.x.signum(), 0)
+                    } else if d.x == 0 {
+                        Vector2::new(0, d.y.signum())
+                    } else {
+                        Vector2::new(d.x.signum(), d.y.signum())
+                    };
 
-        for (start, end) in points.iter() {
-            let d = end - start;
-            let dir = if d.y == 0 {
-                Vector2::new(d.x.signum(), 0)
-            } else if d.x == 0 {
-                Vector2::new(0, d.y.signum())
-            } else {
-                Vector2::new(d.x.signum(), d.y.signum())
-            };
+                    let mut s = *start;
+                    while s != *end + dir {
+                        acc.entry(s).and_modify(|v| *v += 1).or_insert(1);
+                        s += dir;
+                    }
+                    acc
+                },
+            )
+            .iter()
+            .filter(|(_, v)| **v > 1)
+            .count();
 
-            let mut s = *start;
-            while s != *end + dir {
-                overlaps.entry(s).and_modify(|v| *v += 1).or_insert(1);
-                s += dir;
-            }
-        }
-
-        let overlap_count = overlaps.iter().filter(|(_, v)| **v > 1).count();
-        println!("Overlaps {}", overlap_count);
+        println!("Overlaps {}", overlaps);
     }
 }
 
