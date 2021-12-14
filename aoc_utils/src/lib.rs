@@ -1,4 +1,4 @@
-use std::fs::File;
+use std::fs::{read_to_string, File};
 use std::io::{self, BufRead};
 // use std::iter;
 use std::path::Path;
@@ -9,6 +9,25 @@ where
 {
     let file = File::open(filename)?;
     Ok(io::BufReader::new(file).lines())
+}
+
+fn read_file<P>(filename: P) -> io::Result<io::BufReader<File>>
+where
+    P: AsRef<Path>,
+{
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file))
+}
+
+pub fn read_input_unparsed<P>(filename: P) -> Option<String>
+where
+    P: AsRef<Path>,
+{
+    if let Ok(input) = read_to_string(filename) {
+        Option::from(input)
+    } else {
+        Option::None
+    }
 }
 
 pub fn read_input<P>(filename: P) -> Option<Vec<String>>
